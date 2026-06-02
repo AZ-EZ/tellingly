@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Tellingly icon">
+  <rect width="1024" height="1024" rx="176" fill="#101116"/>
+  <path d="M190 242h644v122H599v526H425V364H190Z" fill="#f6f0df"/>
+  <path d="M216 728c136-20 243-14 321 18 81 33 170 31 267-7" fill="none" stroke="#ff6046" stroke-width="54" stroke-linecap="round"/>
+  <circle cx="735" cy="262" r="56" fill="#8de6c1"/>
+</svg>

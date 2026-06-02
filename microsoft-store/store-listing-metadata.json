@@ -1,0 +1,43 @@
+{
+  "productName": "Tellingly",
+  "storeType": "MSIX or PWA app",
+  "recommendedPackagePath": "PWA via PWABuilder using https://tellingly.zandrews77.workers.dev",
+  "shortDescription": "One sharp question a day. See how rare your instincts are.",
+  "description": "Tellingly is a daily identity ritual built around one sharp question at a time.\n\nAnswer a playful dilemma, secret habit, hypothetical, or preference in one tap. The second you answer, Tellingly shows the live distribution of how everyone else answered, your rarity, and a short read on what that instinct suggests about how you operate.\n\nYour answers compound into a private pattern map and a weekly share card with a rarity score and one specific verdict line. Send a compatibility link to a friend and you both see where your instincts line up and where they split, without building a feed or public social graph.\n\nNo account required. No contacts, camera, microphone, or location access.",
+  "keywords": [
+    "personality",
+    "quiz",
+    "questions",
+    "compatibility",
+    "rarity",
+    "friends",
+    "daily",
+    "self discovery",
+    "social"
+  ],
+  "category": "Lifestyle",
+  "secondaryCategory": "Social",
+  "privacyPolicyUrl": "https://tellingly.zandrews77.workers.dev/privacy.html",
+  "supportUrl": "https://tellingly.zandrews77.workers.dev/support.html",
+  "websiteUrl": "https://tellingly.zandrews77.workers.dev",
+  "pricingRecommendation": {
+    "launch": "Free app with paid Tellingly Plus add-on or subscription later.",
+    "why": "The public web app is already accessible for free. A paid Store listing would be hard to defend unless the Windows package unlocks native or Plus-only value.",
+    "plus": {
+      "name": "Tellingly Plus",
+      "suggestedPrice": "$3.99/month or $19.99/year",
+      "unlocks": [
+        "Full pattern archive",
+        "Unlimited comparison links",
+        "Trait trends",
+        "Extra weekend question packs"
+      ]
+    }
+  },
+  "assets": {
+    "tileIcon300": "assets/store/tellingly-store-tile-300.png",
+    "desktopScreenshot": "assets/store/tellingly-store-screenshot-desktop.png",
+    "trailer": "marketing/reels/tellingly-daily-ritual/renders/tellingly-reel.mp4"
+  },
+  "reviewNotes": "Tellingly is a PWA that runs from the production Cloudflare URL. It does not require login. The app stores aggregate anonymous answer tallies in Cloudflare D1 and stores the user's pattern locally unless they explicitly create a comparison link. It does not use camera, contacts, microphone, location, or a public social graph."
+}

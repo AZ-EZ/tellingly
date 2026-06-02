@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tellingly Reel</title>
+    <style>
+      body {
+        margin: 0;
+        background: #101116;
+      }
+
+      #tellingly-reel {
+        position: relative;
+        width: 1080px;
+        height: 1920px;
+        overflow: hidden;
+        color: #f6f0df;
+        background:
+          linear-gradient(155deg, rgba(255, 96, 70, 0.16), transparent 36%),
+          linear-gradient(25deg, rgba(141, 230, 193, 0.12), transparent 48%),
+          #101116;
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+      }
+
+      .scene {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 128px 92px;
+        gap: 42px;
+        box-sizing: border-box;
+      }
+
+      .brand {
+        position: absolute;
+        top: 82px;
+        left: 92px;
+        color: #a6a094;
+        font-size: 30px;
+        font-weight: 800;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+      }
+
+      .headline {
+        margin: 0;
+        font-family: serif;
+        font-size: 106px;
+        line-height: 0.98;
+        letter-spacing: 0;
+      }
+
+      .huge {
+        color: #ff6046;
+        font-family: serif;
+        font-size: 210px;
+        line-height: 0.9;
+      }
+
+      .options {
+        display: grid;
+        gap: 28px;
+      }
+
+      .option {
+        position: relative;
+        overflow: hidden;
+        min-height: 150px;
+        padding: 42px 46px;
+        border: 2px solid rgba(246, 240, 223, 0.16);
+        border-radius: 18px;
+        background: #202229;
+        font-size: 54px;
+        font-weight: 800;
+      }
+
+      .fill {
+        position: absolute;
+        inset: 0 auto 0 0;
+        width: 0;
+        background: linear-gradient(90deg, rgba(141, 230, 193, 0.48), rgba(255, 96, 70, 0.28));
+      }
+
+      .option span {
+        position: relative;
+        z-index: 1;
+      }
+
+      .split {
+        display: grid;
+        gap: 30px;
+      }
+
+      .split-row {
+        display: grid;
+        grid-template-columns: 170px 1fr;
+        align-items: center;
+        gap: 28px;
+        color: #a6a094;
+        font-size: 44px;
+        font-weight: 800;
+      }
+
+      .bar {
+        height: 42px;
+        border-radius: 999px;
+        background: rgba(246, 240, 223, 0.09);
+        overflow: hidden;
+      }
+
+      .bar span {
+        display: block;
+        width: 0;
+        height: 100%;
+        border-radius: inherit;
+        background: #8de6c1;
+      }
+
+      .verdict {
+        color: #ff6046;
+        font-family: serif;
+        font-size: 88px;
+        font-style: italic;
+        line-height: 1.03;
+      }
+
+      .cta {
+        position: absolute;
+        right: 92px;
+        bottom: 92px;
+        color: #8de6c1;
+        font-size: 36px;
+        font-weight: 850;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="tellingly-reel" data-composition-id="tellingly-reel" data-start="0" data-width="1080" data-height="1920" data-duration="15">
+      <div class="brand">Tellingly</div>
+
+      <section class="scene scene-1" data-layout-allow-overflow>
+        <h1 class="headline">You can read their texts and never get caught.</h1>
+      </section>
+
+      <section class="scene scene-2">
+        <div class="huge">Do you?</div>
+        <div class="options">
+          <div class="option"><span>Yes</span></div>
+          <div class="option"><span>No</span></div>
+        </div>
+      </section>
+
+      <section class="scene scene-3">
+        <p class="headline">The live split appears instantly.</p>
+        <div class="split">
+          <div class="split-row"><span>Yes</span><div class="bar"><span class="yes-bar"></span></div></div>
+          <div class="split-row"><span>No</span><div class="bar"><span class="no-bar"></span></div></div>
+        </div>
+      </section>
+
+      <section class="scene scene-4">
+        <div class="huge">33%</div>
+        <p class="headline">You're in the 33% who would.</p>
+      </section>
+
+      <section class="scene scene-5">
+        <p class="verdict">"You do not mind being wrong. You mind being decided for."</p>
+        <div class="cta">Answer today's question</div>
+      </section>
+
+      <script src="./vendor/gsap.min.js"></script>
+      <script>
+        window.__timelines = window.__timelines || {};
+        const tl = gsap.timeline({ paused: true });
+        gsap.set(".scene", { opacity: 0 });
+        gsap.set(".scene-1", { opacity: 1 });
+
+        tl.from(".scene-1 .headline", { y: 80, opacity: 0, duration: 0.55, ease: "power3.out" }, 0);
+        tl.to(".scene-1", { y: -80, opacity: 0, duration: 0.35, ease: "power2.in" }, 2.55);
+
+        tl.set(".scene-2", { y: 0, opacity: 1 }, 3);
+        tl.from(".scene-2 .huge", { y: 80, opacity: 0, duration: 0.45, ease: "power3.out" }, 3);
+        tl.from(".scene-2 .option", { y: 60, opacity: 0, stagger: 0.12, duration: 0.35, ease: "power3.out" }, 3.35);
+        tl.to(".scene-2", { y: -80, opacity: 0, duration: 0.35, ease: "power2.in" }, 5.75);
+
+        tl.set(".scene-3", { y: 0, opacity: 1 }, 6);
+        tl.from(".scene-3 .headline", { y: 65, opacity: 0, duration: 0.45, ease: "power3.out" }, 6);
+        tl.to(".yes-bar", { width: "33%", duration: 0.65, ease: "power3.out" }, 6.35);
+        tl.to(".no-bar", { width: "67%", duration: 0.65, ease: "power3.out" }, 6.45);
+        tl.to(".scene-3", { y: -80, opacity: 0, duration: 0.35, ease: "power2.in" }, 8.85);
+
+        tl.set(".scene-4", { y: 0, opacity: 1 }, 9);
+        tl.from(".scene-4 .huge", { scale: 0.85, opacity: 0, duration: 0.42, ease: "back.out(1.4)" }, 9);
+        tl.from(".scene-4 .headline", { y: 65, opacity: 0, duration: 0.45, ease: "power3.out" }, 9.35);
+        tl.to(".scene-4", { y: -80, opacity: 0, duration: 0.35, ease: "power2.in" }, 11.85);
+
+        tl.set(".scene-5", { y: 0, opacity: 1 }, 12);
+        tl.from(".scene-5 .verdict", { y: 70, opacity: 0, duration: 0.55, ease: "power3.out" }, 12);
+        tl.from(".scene-5 .cta", { y: 30, opacity: 0, duration: 0.35, ease: "power3.out" }, 13.1);
+        window.__timelines["tellingly-reel"] = tl;
+      </script>
+    </div>
+  </body>
+</html>
