@@ -12,15 +12,18 @@ Cloudflare production URL:
 
 Local git status:
 
-- Submission package committed locally in commit `0362c18`.
+- Submission package committed locally in commit `0979ee8`.
 - Configured GitHub remote: `https://github.com/AZ-EZ/tellingly.git`.
 - Push is blocked because GitHub returns `Repository not found`.
 - The GitHub connector also returned 404 for `AZ-EZ/tellingly`.
 - GitHub CLI (`gh`) is not installed on this Mac, so repo creation could not be completed locally.
+- Chrome opened `https://github.com/new`, but GitHub requested sign-in.
 
 Prepared files:
 
+- `codemagic.yaml` hosted build/upload workflow.
 - `ios/App/App.xcodeproj` native iOS project.
+- `ios/App/App.xcodeproj/xcshareddata/xcschemes/App.xcscheme` shared Xcode scheme.
 - `capacitor.config.json` with bundle ID `app.tellingly.ios`.
 - `app-store/app-icon-1024.png`.
 - `app-store/screenshots-6-9/` with five 6.9-inch iPhone screenshots.
@@ -77,6 +80,22 @@ Then push:
 
 ```bash
 git push origin main
+```
+
+### 0.5. Use Codemagic Hosted Build
+
+This mirrors the Finite app workaround. See `app-store/codemagic-build-workaround.md`.
+
+Codemagic workflow file:
+
+```text
+codemagic.yaml
+```
+
+Expected integration name:
+
+```text
+tellingly-app-store-connect
 ```
 
 ### 1. Install/Select Full Xcode

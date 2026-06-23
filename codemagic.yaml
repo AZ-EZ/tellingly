@@ -1,0 +1,37 @@
+workflows:
+  ios-testflight:
+    name: Tellingly iOS TestFlight
+    max_build_duration: 60
+    integrations:
+      app_store_connect: tellingly-app-store-connect
+    environment:
+      groups:
+        - tellingly
+      xcode: 26.0
+      node: latest
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: app.tellingly.ios
+      vars:
+        XCODE_PROJECT: ios/App/App.xcodeproj
+        XCODE_SCHEME: App
+    scripts:
+      - name: Install npm dependencies
+        script: npm ci
+      - name: Build web assets and sync Capacitor
+        script: npm run ios:sync
+      - name: Set up code signing settings
+        script: xcode-project use-profiles
+      - name: Build IPA for App Store Connect
+        script: |
+          xcode-project build-ipa \
+            --project "$CM_BUILD_DIR/$XCODE_PROJECT" \
+            --scheme "$XCODE_SCHEME"
+    artifacts:
+      - build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: false
