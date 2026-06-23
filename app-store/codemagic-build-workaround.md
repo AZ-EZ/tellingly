@@ -29,10 +29,10 @@ The workflow:
 5. Add repository `AZ-EZ/tellingly`.
 6. Choose the `codemagic.yaml` workflow.
 7. In Codemagic Team settings, open `Integrations` -> `Developer Portal`.
-8. Add an App Store Connect API key integration named exactly:
+8. Use the existing App Store Connect API key integration:
 
 ```text
-tellingly-app-store-connect
+finite-time-app-store-connect
 ```
 
 ## App Store Connect API Key
@@ -65,7 +65,7 @@ In Codemagic, after the App Store Connect integration exists:
 app.tellingly.ios
 ```
 
-The workflow uses:
+The workflow uses the existing `finite-time-app-store-connect` App Store Connect integration and this signing block:
 
 ```yaml
 ios_signing:

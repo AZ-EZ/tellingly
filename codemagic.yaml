@@ -3,10 +3,8 @@ workflows:
     name: Tellingly iOS TestFlight
     max_build_duration: 60
     integrations:
-      app_store_connect: tellingly-app-store-connect
+      app_store_connect: finite-time-app-store-connect
     environment:
-      groups:
-        - tellingly
       xcode: 26.0
       node: latest
       ios_signing:

@@ -95,7 +95,7 @@ codemagic.yaml
 Expected integration name:
 
 ```text
-tellingly-app-store-connect
+finite-time-app-store-connect
 ```
 
 ### 1. Install/Select Full Xcode
