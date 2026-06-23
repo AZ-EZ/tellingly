@@ -4,3 +4,5 @@ node_modules/
 dist/
 *.log
 marketing/reels/**/renders/work-*/
+*.p8
+AuthKey_*.p8

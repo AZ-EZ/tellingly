@@ -8,6 +8,8 @@ Submit as an iOS app named `Tellingly`, category `Lifestyle`, secondary category
 
 The safest App Store strategy is **not** to submit a webview-only wrapper. Apple guideline 4.2 says apps should have features, content, and UI beyond a repackaged website. The prepared iOS wrapper should add native value before submission: local notification scheduling, native share sheet for cards/links, StoreKit subscription purchase, and offline/local pattern storage.
 
+Current submission status is tracked in `submission-runbook.md`. This machine currently has Command Line Tools only, not full Xcode, and cannot produce/upload a signed App Store build until Xcode/signing/App Store Connect access are available.
+
 ## Current URLs
 
 - Web app: https://tellingly.zandrews77.workers.dev
