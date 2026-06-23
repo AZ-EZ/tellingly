@@ -7,8 +7,15 @@ const appShot = "tellingly-home.png";
 await mkdir("app-store/screenshots-6-9", { recursive: true });
 await mkdir("ios/App/App/Assets.xcassets/AppIcon.appiconset", { recursive: true });
 
-await sharp(iconSvg).resize(1024, 1024).png().toFile("app-store/app-icon-1024.png");
-await sharp(iconSvg).resize(1024, 1024).png().toFile("ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png");
+const opaqueIcon = await sharp(iconSvg)
+  .resize(1024, 1024)
+  .flatten({ background: "#101116" })
+  .toColourspace("srgb")
+  .png({ palette: false })
+  .toBuffer();
+
+await sharp(opaqueIcon).toFile("app-store/app-icon-1024.png");
+await sharp(opaqueIcon).toFile("ios/App/App/Assets.xcassets/AppIcon.appiconset/AppIcon-512@2x.png");
 
 const phone = await sharp(appShot)
   .resize({ width: 560 })
