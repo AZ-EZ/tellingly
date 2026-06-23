@@ -3,6 +3,7 @@ import { QUESTIONS, TRAITS, getQuestion, optionSeedCount } from "./questions.js"
 const ROUND_SIZE = 5;
 const STORAGE_KEY = "tellingly.v1";
 const app = document.getElementById("app");
+const nativePlugins = () => window.Capacitor?.Plugins || {};
 
 const state = {
   ready: false,
@@ -175,6 +176,7 @@ function renderFinal() {
           <button class="btn secondary" data-action="download">${icon("i-download")} Card</button>
           <button class="btn" data-action="share" ${state.sharing ? "disabled" : ""}>${icon("i-link")} Compare</button>
         </div>
+        <button class="btn secondary full" data-action="remind">${icon("i-bell")} Remind tomorrow</button>
       </section>
       ${renderShareCard()}
       <section class="waitlist-panel">
@@ -267,6 +269,8 @@ function bindActions() {
   if (download) download.addEventListener("click", downloadCard);
   const waitlist = document.querySelector("[data-action='waitlist']");
   if (waitlist) waitlist.addEventListener("click", joinWaitlist);
+  const remind = document.querySelector("[data-action='remind']");
+  if (remind) remind.addEventListener("click", scheduleReminder);
   const waitlistEmail = document.getElementById("waitlistEmail");
   if (waitlistEmail) {
     waitlistEmail.addEventListener("input", (event) => {
@@ -399,14 +403,57 @@ async function createShareLink() {
         rarity: state.final.rarity
       }
     });
-    await copy(data.url);
-    showToast("Comparison link copied.");
+    await shareComparison(data.url);
   } catch {
     showToast("Could not create the link yet.");
   } finally {
     state.sharing = false;
     render();
   }
+}
+
+async function shareComparison(url) {
+  const Share = nativePlugins().Share;
+  if (Share?.share) {
+    await Share.share({
+      title: "Tellingly",
+      text: "Answer today's questions with me and see where we match.",
+      url,
+      dialogTitle: "Compare on Tellingly"
+    });
+    showToast("Comparison link ready.");
+    return;
+  }
+  await copy(url);
+  showToast("Comparison link copied.");
+}
+
+async function scheduleReminder() {
+  const LocalNotifications = nativePlugins().LocalNotifications;
+  if (!LocalNotifications?.schedule) {
+    showToast("Daily reminders are available in the iOS app.");
+    return;
+  }
+
+  const permission = await LocalNotifications.requestPermissions();
+  if (permission.display !== "granted") {
+    showToast("Turn on notifications to get the daily question.");
+    return;
+  }
+
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(9, 0, 0, 0);
+  await LocalNotifications.schedule({
+    notifications: [{
+      id: 101,
+      title: "Today's Tellingly is ready",
+      body: "One sharp question. One tap. See where you land.",
+      schedule: { at: tomorrow },
+      sound: "default"
+    }]
+  });
+  showToast("Reminder set for tomorrow morning.");
 }
 
 async function joinWaitlist() {

@@ -9,6 +9,11 @@
     "db:migrate:local": "wrangler d1 migrations apply tellingly-prod --local",
     "db:migrate:remote": "wrangler d1 migrations apply tellingly-prod --remote",
     "assets:icons": "node scripts/generate-store-assets.mjs",
+    "assets:apple": "node scripts/generate-apple-assets.mjs",
+    "ios:add": "npx cap add ios",
+    "ios:sync": "npx cap sync ios",
+    "ios:copy": "npx cap copy ios",
+    "ios:doctor": "npx cap doctor ios",
     "reel:lint": "hyperframes lint marketing/reels/tellingly-daily-ritual",
     "reel:inspect": "hyperframes inspect marketing/reels/tellingly-daily-ritual --samples 10",
     "reel:render": "node scripts/render-reel.mjs",
@@ -21,5 +26,14 @@
     "hyperframes": "^0.6.69",
     "sharp": "^0.34.5",
     "wrangler": "^4.96.0"
+  },
+  "dependencies": {
+    "@capacitor/app": "^8.1.0",
+    "@capacitor/cli": "^8.4.1",
+    "@capacitor/core": "^8.4.1",
+    "@capacitor/ios": "^8.4.1",
+    "@capacitor/local-notifications": "^8.2.0",
+    "@capacitor/preferences": "^8.0.1",
+    "@capacitor/share": "^8.0.1"
   }
 }
