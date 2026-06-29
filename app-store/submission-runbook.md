@@ -1,23 +1,43 @@
 # Tellingly Apple Submission Runbook
 
-Prepared on June 22, 2026.
+Prepared on June 22, 2026. Updated on June 29, 2026.
 
 ## Current Status
 
-The Cloudflare web app is live, a real Capacitor iOS project now exists, and App Store metadata/assets have been prepared.
+The Cloudflare web app is live, a real Capacitor iOS project exists, the App Store Connect app record exists, the iOS build has been uploaded, the App Store product-page metadata/screenshots have been submitted through the App Store Connect API, and the app has been submitted to Apple for review.
 
 Cloudflare production URL:
 
 - https://tellingly.zandrews77.workers.dev
 
-Local git status:
+Current App Store Connect status as of June 29, 2026:
 
-- Submission package committed locally in commit `0979ee8`.
-- Configured GitHub remote: `https://github.com/AZ-EZ/tellingly.git`.
-- Push is blocked because GitHub returns `Repository not found`.
-- The GitHub connector also returned 404 for `AZ-EZ/tellingly`.
-- GitHub CLI (`gh`) is not installed on this Mac, so repo creation could not be completed locally.
-- Chrome opened `https://github.com/new`, but GitHub requested sign-in.
+- App Store Connect app ID: `6783204675`.
+- Bundle ID: `app.tellingly.ios`.
+- Version ID: `73e35076-21af-4f5d-bbb8-1b3875362a91`.
+- Review submission ID: `00365c45-f3d9-4c75-95fd-d23b40f7ff9b`.
+- Localization ID: `05631e3d-c3fc-4879-b034-ee5d5817754b`.
+- Screenshot set ID: `114b7841-43e0-431f-a26b-0195db03bab9`.
+- Selected build ID: `c215a2f0-5dab-4a57-bff1-aafe0cef3a43`.
+- App Review detail ID: `5e249c35-5302-45a7-a65c-39062148a5f6`.
+- State: `REJECTED`.
+- Submitted for review: `2026-06-24T01:38:03.585Z`.
+- Export compliance: cleared; the build declares no non-exempt encryption.
+- Product-page metadata: description, keywords, promotional text, support URL, marketing URL, copyright, release type, and IDFA flag are set.
+- Screenshots: five iPhone screenshots are uploaded and verified as `COMPLETE`.
+- App Review detail: contact name, phone, email, review notes, and `demoAccountRequired=false` are set.
+
+Prior App Store Connect submission status:
+
+- Review submission `00365c45-f3d9-4c75-95fd-d23b40f7ff9b` exists and includes review submission item `MDAzNjVjNDUtZjNkOS00Yzc1LTk1ZmQtZDIzYjQwZjdmZjlifDZ8ODg3MzE5Mjg0`.
+- The iOS version `73e35076-21af-4f5d-bbb8-1b3875362a91` now reports `REJECTED`.
+- The review submission itself now reports `UNRESOLVED_ISSUES`; the review submission item reports `REJECTED`.
+- Content rights were patched to `DOES_NOT_USE_THIRD_PARTY_CONTENT`.
+- Primary category was patched to `LIFESTYLE`.
+- Age rating was patched with all required content attributes set to `NONE` or `false`.
+- Pricing was set to free (`$0.00`) in App Store Connect's Pricing and Availability UI; the subsequent API attach succeeded.
+- The final App Store Connect UI submission succeeded; the page confirmed `Your submission has been submitted to App Review`, `1 Item Submitted`, and `Waiting for Review`.
+- Latest API verification: `/v1/reviewSubmissions/00365c45-f3d9-4c75-95fd-d23b40f7ff9b` is `UNRESOLVED_ISSUES`; `/v1/appStoreVersions/73e35076-21af-4f5d-bbb8-1b3875362a91` is `REJECTED`.
 
 Prepared files:
 
@@ -31,19 +51,24 @@ Prepared files:
 - `app-store/review-notes.md`.
 - `app-store/privacy-label-draft.md`.
 - `ios/App/App/PrivacyInfo.xcprivacy`.
+- `fastlane/` App Store metadata/screenshot package.
+- `scripts/app-store-connect-submit.mjs` for API-based metadata/build/review-detail updates.
+- `scripts/app-store-upload-screenshots.mjs` for API-based screenshot upload.
+- `app-store/monetization-plan.md` with subscription account setup status.
+- `app-store/subscription-review-notes.md` with the prepared v1.1 subscription review note and screenshot checklist.
 
 Native app behavior has been added to reduce webview-only review risk:
 
 - iOS native share sheet for comparison links through Capacitor Share.
 - iOS local notification scheduling for the daily reminder through Capacitor Local Notifications.
 
-Local blockers found:
+Historical local blockers that were worked around:
 
-- Full Xcode is not installed/selected. `xcodebuild -version` reports that only Command Line Tools are active.
+- Full Xcode is not installed/selected.
 - `xcrun altool` is not available.
 - Apple Transporter is not installed.
-- No App Store Connect API key is present in the workspace.
-- No signed `.xcarchive` has been created or uploaded.
+- Browser automation against App Store Connect is unreliable because Chrome can block automation when an extension popup is active.
+- Codemagic and the App Store Connect API were used instead for build upload and listing updates.
 
 ## Apple Requirements To Finish Submission
 
@@ -162,6 +187,45 @@ In App Store Connect:
 ## Rejection Risk To Address First
 
 Apple App Review guideline 4.2 can reject apps that are merely websites wrapped as apps or have limited functionality. Tellingly now includes native share and local notification hooks, but a future Plus release should add StoreKit subscriptions inside the iOS build if the app is sold with paid features.
+
+## Current Submission Status
+
+As of June 29, 2026, the App Store review submission is rejected with unresolved issues:
+
+- Review submission ID: `00365c45-f3d9-4c75-95fd-d23b40f7ff9b`
+- App Store version ID: `73e35076-21af-4f5d-bbb8-1b3875362a91`
+- App Store Connect state: `REJECTED`
+- Submitted date: `2026-06-24T01:38:03.585Z`
+
+TestFlight status:
+
+- Build ID: `c215a2f0-5dab-4a57-bff1-aafe0cef3a43`
+- Build processing state: `VALID`
+- Internal group: `Tellingly Internal`
+- Internal group ID: `4cdada8a-6d38-468f-b7f3-58eb7796555b`
+- Internal tester invited: `zandrews77@hotmail.com`
+- External group: `Tellingly Testers`
+- External group ID: `6a590cb2-d74e-4306-9e43-ad613cc0b23a`
+- External beta review state: `WAITING_FOR_BETA_REVIEW`
+
+External TestFlight emails cannot be sent until Apple approves beta review. Once approved, retry the beta tester invitation for `zandrews77@hotmail.com`.
+
+Subscription setup status for v1.1:
+
+- Subscription group: `Tellingly Plus`, group ID `22183253`.
+- Monthly subscription: `app.tellingly.plus.monthly`, Apple ID `6783584502`.
+- Annual subscription: `app.tellingly.plus.annual`, Apple ID `6783584539`.
+- Availability: set for both subscriptions with `availableInNewTerritories=true`.
+- Starting prices: monthly `$3.99`; annual `$24.99`.
+- Product-level subscription review notes: added to both subscriptions in App Store Connect.
+- Local v1.1 code now includes the RevenueCat Capacitor SDK, native-iOS-only paywall, purchase flow, entitlement check, and Restore Purchases control.
+- Local v1.1 native config now bundles the app assets inside the iOS binary instead of loading the Cloudflare website through `server.url`; the native app calls Cloudflare only for `/api/*`.
+- RevenueCat `default` offering is configured with `$rc_monthly` -> `app.tellingly.plus.monthly` and `$rc_annual` -> `app.tellingly.plus.annual`.
+- The RevenueCat iOS public SDK key is installed locally and deployed to Cloudflare.
+- The iOS project is bumped to marketing version `1.1`, build `2`.
+- Latest Cloudflare deployment with the SDK key and native API-base fix: `a6bd28bc-04b0-410d-bb6f-75fbcbb18cb1`.
+- Still needed before v1.1 subscription submission: build and upload the signed v1.1 IPA, upload App Review screenshots showing the real paywall, create or select the v1.1 app version after Apple allows it, and attach the first subscription to v1.1 before submitting.
+- The rejected v1.0 submission should be resolved with a new build that contains the bundled app shell and RevenueCat paywall. The exact Resolution Center rejection text was not available through the App Store Connect API.
 
 ## Official References
 

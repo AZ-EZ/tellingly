@@ -8,7 +8,6 @@ Confirm in App Store Connect after the final iOS build is complete.
 | --- | --- | --- | --- | --- |
 | User Content / Other Data: answer choices | Yes | No, if no account join is made | No | App Functionality, Product Personalization |
 | Identifiers: anonymous local ID hashed server-side | Yes | No | No | App Functionality, fraud/duplicate prevention |
-| Contact Info: email | Only if waitlist is enabled and user submits it | Yes | No | Developer Communications |
 | Diagnostics | No in current web build | No | No | N/A |
 | Location, Contacts, Camera, Microphone, Health, Financial Info | No | No | No | N/A |
 

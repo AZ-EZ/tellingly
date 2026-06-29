@@ -34,6 +34,7 @@
     "@capacitor/ios": "^8.4.1",
     "@capacitor/local-notifications": "^8.2.0",
     "@capacitor/preferences": "^8.0.1",
-    "@capacitor/share": "^8.0.1"
+    "@capacitor/share": "^8.0.1",
+    "@revenuecat/purchases-capacitor": "^13.2.0"
   }
 }

@@ -1,0 +1,1 @@
+quiz,personality,questions,compatibility,rarity,self discovery,friends,daily

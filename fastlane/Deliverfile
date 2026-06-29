@@ -1,0 +1,15 @@
+app_identifier "app.tellingly.ios"
+app "6783204675"
+username nil
+
+platform "ios"
+primary_category "LIFESTYLE"
+secondary_category "ENTERTAINMENT"
+
+metadata_path "./fastlane/metadata"
+screenshots_path "./fastlane/screenshots"
+
+skip_binary_upload true
+skip_app_version_update true
+overwrite_screenshots true
+force true

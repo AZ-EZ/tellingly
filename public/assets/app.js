@@ -2,6 +2,10 @@ import { QUESTIONS, TRAITS, getQuestion, optionSeedCount } from "./questions.js"
 
 const ROUND_SIZE = 5;
 const STORAGE_KEY = "tellingly.v1";
+const PLUS_ENTITLEMENT = "plus";
+const PLUS_MONTHLY_PRODUCT_ID = "app.tellingly.plus.monthly";
+const PLUS_ANNUAL_PRODUCT_ID = "app.tellingly.plus.annual";
+const API_ORIGIN = "https://tellingly.zandrews77.workers.dev";
 const app = document.getElementById("app");
 const nativePlugins = () => window.Capacitor?.Plugins || {};
 
@@ -20,7 +24,17 @@ const state = {
   toast: "",
   sharing: false,
   final: null,
-  waitlistEmail: ""
+  plus: {
+    configured: false,
+    enabled: false,
+    active: false,
+    ready: false,
+    offering: null,
+    selectedPlan: "annual",
+    open: false,
+    busy: false,
+    error: ""
+  }
 };
 
 if (!state.anonymousId) {
@@ -31,6 +45,7 @@ if (!state.anonymousId) {
 init();
 
 async function init() {
+  await initRevenueCat();
   const compareToken = getCompareToken();
   if (compareToken) {
     await loadCompare(compareToken);
@@ -78,6 +93,7 @@ function render() {
   app.innerHTML = `
     ${renderTopbar()}
     ${state.final ? renderFinal() : renderQuestion()}
+    ${state.plus.open ? renderPaywall() : ""}
     ${state.toast ? `<div class="toast">${esc(state.toast)}</div>` : ""}
   `;
 
@@ -91,6 +107,7 @@ function renderTopbar() {
     <header class="topbar">
       <div class="brand"><span class="brand-mark">T</span><span>TELLINGLY</span></div>
       <div class="day-chip">${esc(day)}</div>
+      ${state.plus.enabled ? `<button class="plus-chip ${state.plus.active ? "active" : ""}" data-action="plus">${state.plus.active ? "Plus" : "Try Plus"}</button>` : ""}
       <div class="streak-chip">${streak || 1} day${streak === 1 ? "" : "s"}</div>
     </header>
   `;
@@ -176,17 +193,10 @@ function renderFinal() {
           <button class="btn secondary" data-action="download">${icon("i-download")} Card</button>
           <button class="btn" data-action="share" ${state.sharing ? "disabled" : ""}>${icon("i-link")} Compare</button>
         </div>
+        ${state.plus.enabled && !state.plus.active ? `<button class="btn hot full" data-action="plus">Unlock Plus</button>` : ""}
         <button class="btn secondary full" data-action="remind">${icon("i-bell")} Remind tomorrow</button>
       </section>
       ${renderShareCard()}
-      <section class="waitlist-panel">
-        <p class="eyebrow">iOS beta</p>
-        <p class="fine">Leave an email for the TestFlight/App Store launch list.</p>
-        <div class="email-row">
-          <input id="waitlistEmail" value="${escAttr(state.waitlistEmail)}" inputmode="email" autocomplete="email" placeholder="you@example.com">
-          <button class="btn hot" data-action="waitlist">Join</button>
-        </div>
-      </section>
       <button class="btn secondary" data-action="restart">${icon("i-rotate")} Start over</button>
     </section>
   `;
@@ -255,6 +265,41 @@ function renderCompareFinal() {
   `;
 }
 
+function renderPaywall() {
+  const monthly = getPlusPackage("monthly");
+  const annual = getPlusPackage("annual");
+  const selected = state.plus.selectedPlan === "monthly" ? monthly : annual;
+  const monthlyPrice = priceFor(monthly, "$3.99/mo");
+  const annualPrice = priceFor(annual, "$24.99/yr");
+  return `
+    <section class="paywall-backdrop" role="dialog" aria-modal="true" aria-label="Tellingly Plus">
+      <div class="paywall">
+        <button class="icon-btn paywall-close" data-action="close-paywall" aria-label="Close">${icon("i-x")}</button>
+        <p class="eyebrow">Tellingly Plus</p>
+        <h2>Keep the pattern, not just the moment.</h2>
+        <p class="fine">Unlock the full archive, trait trends, unlimited compatibility links, comparison history, and extra question packs.</p>
+        <div class="plan-grid" role="radiogroup" aria-label="Choose a Plus plan">
+          <button class="plan ${state.plus.selectedPlan === "annual" ? "selected" : ""}" data-action="select-plan" data-plan="annual">
+            <span>Annual</span>
+            <strong>${esc(annualPrice)}</strong>
+            <small>Best for the weekly card habit</small>
+          </button>
+          <button class="plan ${state.plus.selectedPlan === "monthly" ? "selected" : ""}" data-action="select-plan" data-plan="monthly">
+            <span>Monthly</span>
+            <strong>${esc(monthlyPrice)}</strong>
+            <small>Easy to try</small>
+          </button>
+        </div>
+        ${state.plus.error ? `<p class="paywall-error">${esc(state.plus.error)}</p>` : ""}
+        <button class="btn hot full" data-action="purchase-plus" ${state.plus.busy || !selected ? "disabled" : ""}>
+          ${state.plus.busy ? "Working..." : "Continue"}
+        </button>
+        <button class="restore-btn" data-action="restore-plus" ${state.plus.busy ? "disabled" : ""}>Restore Purchases</button>
+      </div>
+    </section>
+  `;
+}
+
 function bindActions() {
   document.querySelectorAll("[data-action='choose']").forEach((button) => {
     button.addEventListener("click", () => choose(button.dataset.option));
@@ -267,16 +312,28 @@ function bindActions() {
   if (share) share.addEventListener("click", createShareLink);
   const download = document.querySelector("[data-action='download']");
   if (download) download.addEventListener("click", downloadCard);
-  const waitlist = document.querySelector("[data-action='waitlist']");
-  if (waitlist) waitlist.addEventListener("click", joinWaitlist);
   const remind = document.querySelector("[data-action='remind']");
   if (remind) remind.addEventListener("click", scheduleReminder);
-  const waitlistEmail = document.getElementById("waitlistEmail");
-  if (waitlistEmail) {
-    waitlistEmail.addEventListener("input", (event) => {
-      state.waitlistEmail = event.target.value;
+  document.querySelectorAll("[data-action='plus']").forEach((button) => {
+    button.addEventListener("click", () => openPaywall("manual"));
+  });
+  const closePaywall = document.querySelector("[data-action='close-paywall']");
+  if (closePaywall) closePaywall.addEventListener("click", () => {
+    state.plus.open = false;
+    state.plus.error = "";
+    render();
+  });
+  document.querySelectorAll("[data-action='select-plan']").forEach((button) => {
+    button.addEventListener("click", () => {
+      state.plus.selectedPlan = button.dataset.plan === "monthly" ? "monthly" : "annual";
+      state.plus.error = "";
+      render();
     });
-  }
+  });
+  const purchase = document.querySelector("[data-action='purchase-plus']");
+  if (purchase) purchase.addEventListener("click", purchasePlus);
+  const restore = document.querySelector("[data-action='restore-plus']");
+  if (restore) restore.addEventListener("click", restorePlus);
 }
 
 async function choose(optionId) {
@@ -386,6 +443,10 @@ function buildCompareFinal(rarity, traits, topTrait) {
 
 async function createShareLink() {
   if (!state.final || state.sharing) return;
+  if (shouldGateAdditionalComparison()) {
+    await openPaywall("comparison");
+    return;
+  }
   state.sharing = true;
   render();
   try {
@@ -403,6 +464,7 @@ async function createShareLink() {
         rarity: state.final.rarity
       }
     });
+    rememberShareCreated();
     await shareComparison(data.url);
   } catch {
     showToast("Could not create the link yet.");
@@ -410,6 +472,134 @@ async function createShareLink() {
     state.sharing = false;
     render();
   }
+}
+
+async function initRevenueCat() {
+  const Purchases = nativePlugins().Purchases;
+  const apiKey = revenueCatIosKey();
+  state.plus.enabled = Boolean(isNativeIos() && Purchases && apiKey);
+  if (!state.plus.enabled) return;
+
+  try {
+    await Purchases.configure({ apiKey, appUserID: state.anonymousId });
+    state.plus.configured = true;
+    const info = await Purchases.getCustomerInfo();
+    updatePlusEntitlement(info.customerInfo);
+    await loadPlusOffering();
+  } catch (error) {
+    state.plus.enabled = false;
+    state.plus.error = friendlyPurchaseError(error);
+  } finally {
+    state.plus.ready = true;
+  }
+}
+
+async function loadPlusOffering() {
+  if (!state.plus.configured) return null;
+  const Purchases = nativePlugins().Purchases;
+  const offerings = await Purchases.getOfferings();
+  state.plus.offering = offerings.current || offerings.all?.default || Object.values(offerings.all || {})[0] || null;
+  return state.plus.offering;
+}
+
+async function openPaywall() {
+  if (!state.plus.enabled) {
+    showToast("Plus will be available in the iOS app.");
+    return;
+  }
+  state.plus.open = true;
+  state.plus.error = "";
+  if (!state.plus.offering && state.plus.configured) {
+    try {
+      await loadPlusOffering();
+    } catch (error) {
+      state.plus.error = friendlyPurchaseError(error);
+    }
+  }
+  render();
+}
+
+async function purchasePlus() {
+  const Purchases = nativePlugins().Purchases;
+  const aPackage = getPlusPackage(state.plus.selectedPlan);
+  if (!Purchases || !aPackage) {
+    state.plus.error = "Plus is still loading. Try again in a moment.";
+    render();
+    return;
+  }
+
+  state.plus.busy = true;
+  state.plus.error = "";
+  render();
+  try {
+    const result = await Purchases.purchasePackage({ aPackage });
+    updatePlusEntitlement(result.customerInfo);
+    state.plus.open = !state.plus.active;
+    showToast(state.plus.active ? "Plus is unlocked." : "Purchase finished, but Plus is still syncing.");
+  } catch (error) {
+    if (!error?.userCancelled) state.plus.error = friendlyPurchaseError(error);
+  } finally {
+    state.plus.busy = false;
+    render();
+  }
+}
+
+async function restorePlus() {
+  const Purchases = nativePlugins().Purchases;
+  if (!Purchases) return;
+  state.plus.busy = true;
+  state.plus.error = "";
+  render();
+  try {
+    const result = await Purchases.restorePurchases();
+    updatePlusEntitlement(result.customerInfo);
+    state.plus.open = !state.plus.active;
+    showToast(state.plus.active ? "Purchases restored." : "No active Plus subscription found.");
+  } catch (error) {
+    state.plus.error = friendlyPurchaseError(error);
+  } finally {
+    state.plus.busy = false;
+    render();
+  }
+}
+
+function updatePlusEntitlement(customerInfo) {
+  state.plus.active = Boolean(customerInfo?.entitlements?.active?.[PLUS_ENTITLEMENT]?.isActive);
+}
+
+function getPlusPackage(plan) {
+  const offering = state.plus.offering;
+  if (!offering) return null;
+  if (plan === "monthly") return offering.monthly || offering.availablePackages?.find((row) => row.product?.identifier === PLUS_MONTHLY_PRODUCT_ID) || null;
+  return offering.annual || offering.availablePackages?.find((row) => row.product?.identifier === PLUS_ANNUAL_PRODUCT_ID) || null;
+}
+
+function priceFor(aPackage, fallback) {
+  const product = aPackage?.product;
+  return product?.priceString || product?.localizedPriceString || product?.pricePerMonthString || fallback;
+}
+
+function shouldGateAdditionalComparison() {
+  const sharesCreated = state.profile.shareLinksCreated || 0;
+  return state.plus.enabled && !state.plus.active && sharesCreated >= 1;
+}
+
+function rememberShareCreated() {
+  state.profile.shareLinksCreated = (state.profile.shareLinksCreated || 0) + 1;
+  saveLocal();
+}
+
+function revenueCatIosKey() {
+  return String(window.TELLINGLY_REVENUECAT_IOS_API_KEY || "").trim();
+}
+
+function isNativeIos() {
+  return window.Capacitor?.isNativePlatform?.() && window.Capacitor?.getPlatform?.() === "ios";
+}
+
+function friendlyPurchaseError(error) {
+  const message = error?.message || error?.localizedDescription || "";
+  return message ? String(message) : "The store is not ready yet. Try again shortly.";
 }
 
 async function shareComparison(url) {
@@ -454,22 +644,6 @@ async function scheduleReminder() {
     }]
   });
   showToast("Reminder set for tomorrow morning.");
-}
-
-async function joinWaitlist() {
-  const email = state.waitlistEmail.trim();
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    showToast("Enter a valid email.");
-    return;
-  }
-  try {
-    await api("/api/waitlist", { method: "POST", body: { email, source: "web-finish" } });
-    state.waitlistEmail = "";
-    showToast("You're on the list.");
-  } catch {
-    showToast("Couldn't save that email yet.");
-  }
-  render();
 }
 
 function restartDaily() {
@@ -652,13 +826,19 @@ function getCompareToken() {
 }
 
 async function api(path, options = {}) {
-  const response = await fetch(path, {
+  const response = await fetch(apiUrl(path), {
     method: options.method || "GET",
     headers: options.body ? { "Content-Type": "application/json" } : undefined,
     body: options.body ? JSON.stringify(options.body) : undefined
   });
   if (!response.ok) throw new Error(await response.text());
   return response.json();
+}
+
+function apiUrl(path) {
+  if (/^https?:\/\//.test(path)) return path;
+  if (window.Capacitor?.isNativePlatform?.()) return `${API_ORIGIN}${path}`;
+  return path;
 }
 
 async function copy(text) {

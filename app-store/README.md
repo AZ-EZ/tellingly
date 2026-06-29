@@ -41,10 +41,10 @@ Apple guideline 3.1.1 requires in-app purchase if you unlock digital features or
 
 Likely App Store privacy answers for this build:
 
-- Data collected: User Content or Other Data for answer choices/comparison-link payloads, Contact Info only if waitlist email is enabled, Identifiers for anonymous hashed device ID.
+- Data collected: User Content or Other Data for answer choices/comparison-link payloads, Identifiers for anonymous hashed device ID.
 - Linked to user: No for answer events if no account/email association is created.
 - Used for tracking: No.
-- Purposes: App Functionality, Product Personalization, Developer Communications for waitlist email only.
+- Purposes: App Functionality, Product Personalization.
 
 Confirm these answers against the final iOS build and any analytics, payment, or SDKs you add.
 

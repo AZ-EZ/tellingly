@@ -3,10 +3,6 @@
   "appName": "Tellingly",
   "webDir": "public",
   "bundledWebRuntime": false,
-  "server": {
-    "url": "https://tellingly.zandrews77.workers.dev",
-    "cleartext": false
-  },
   "ios": {
     "contentInset": "automatic",
     "scheme": "Tellingly"

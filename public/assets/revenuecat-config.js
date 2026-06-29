@@ -1,0 +1,1 @@
+window.TELLINGLY_REVENUECAT_IOS_API_KEY = "appl_MWTnjLyRTslqqGQCQmjcqFvAVZ";
