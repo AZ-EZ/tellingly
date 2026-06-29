@@ -79,11 +79,13 @@ ios_signing:
 2. Select workflow `Tellingly iOS TestFlight`.
 3. Start build on branch `main`.
 4. When it succeeds, open App Store Connect -> Tellingly -> TestFlight.
-5. Confirm the uploaded build shows `Complete`.
+5. Confirm uploaded build `1.0 (2)` shows `Complete`.
 6. If Apple asks for encryption compliance, answer that the app does not implement proprietary or standard encryption algorithms itself.
 7. For App Store review, open App Store Connect -> Tellingly -> Distribution -> iOS App Version 1.0.
-8. In the `Build` section, select the latest uploaded build.
+8. In the `Build` section, select build `1.0 (2)`, not the older build `1`.
 
 ## Current Blocker
 
-Chrome opened `https://github.com/new`, but GitHub requested sign-in. The repo cannot be created or pushed until GitHub is signed in or another repo-creation credential is available.
+The GitHub repo exists and `main` is pushed. App Store Connect still shows only the old build `1`, so the next blocker is starting the Codemagic hosted build for `main` and letting it upload build `1.0 (2)`.
+
+This Mac cannot perform the local upload because `xcodebuild` is pointed at Command Line Tools instead of full Xcode, and no Codemagic API token/CLI is available in the shell.

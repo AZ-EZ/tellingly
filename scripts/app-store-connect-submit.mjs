@@ -9,6 +9,7 @@ const keyPath = requiredEnv("ASC_KEY_PATH");
 const privateKey = fs.readFileSync(keyPath, "utf8");
 const metadata = JSON.parse(fs.readFileSync("app-store/app-store-connect-metadata.json", "utf8"));
 const contactPhone = process.env.ASC_CONTACT_PHONE;
+const requiredBuildVersion = process.env.ASC_BUILD_VERSION || "2";
 
 function requiredEnv(name) {
   const value = process.env[name];
@@ -105,10 +106,18 @@ async function main() {
   );
   const localization = localizations.data.find((item) => item.attributes.locale === "en-US") || localizations.data[0];
 
-  const builds = await request("GET", `/v1/builds?filter[app]=${appId}&limit=10`);
-  const build = builds.data.find((item) => item.attributes.processingState === "VALID" && !item.attributes.expired);
+  const builds = await request("GET", `/v1/builds?filter[app]=${appId}&sort=-uploadedDate&limit=10`);
+  const build = builds.data.find(
+    (item) =>
+      item.attributes.version === requiredBuildVersion &&
+      item.attributes.processingState === "VALID" &&
+      !item.attributes.expired,
+  );
 
-  if (!build) throw new Error("No valid, non-expired App Store eligible build found.");
+  if (!build) {
+    const found = builds.data.map((item) => `${item.attributes.version}:${item.attributes.processingState}`).join(", ");
+    throw new Error(`Build ${requiredBuildVersion} is not ready in App Store Connect. Found builds: ${found || "none"}.`);
+  }
 
   await request("PATCH", `/v1/appStoreVersionLocalizations/${localization.id}`, {
     data: {
@@ -194,6 +203,7 @@ async function main() {
         localizationId: localization.id,
         selectedBuildId: refreshed.data?.id || build.id,
         reviewDetailId,
+        requiredBuildVersion,
         versionState: version.attributes.appStoreState,
         completed: [
           "metadata",
