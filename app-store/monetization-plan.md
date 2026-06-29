@@ -6,7 +6,7 @@ Updated on June 24, 2026.
 
 Launch the current App Store version as free while it is in review. Do not promise or expose paid unlocks in the live listing until the next binary includes RevenueCat purchase, restore, and entitlement checks.
 
-Use a freemium subscription model for v1.1:
+Use a freemium subscription model for the fixed `1.0` resubmission:
 
 - Free: daily question, live rarity result, weekly share card, and one active compatibility link.
 - Plus monthly: `app.tellingly.plus.monthly`, recommended U.S. price `$3.99/month`.
@@ -34,7 +34,7 @@ Created in App Store Connect:
   - Starting price: `$3.99` using U.S. price point `eyJzIjoiNjc4MzU4NDUwMiIsInQiOiJVU0EiLCJwIjoiMTAwNDkifQ`
   - Subscription price ID: `eyJhIjoiNjc4MzU4NDUwMiIsImMiOiJVUyIsImQiOjAsInAiOiIwIn0`
   - Review note: added in App Store Connect
-  - Status: `Missing Metadata` until the App Review screenshot is uploaded and the first subscription is attached to a v1.1 app version
+  - Status: `Missing Metadata` until the App Review screenshot is uploaded and the first subscription is attached to the fixed `1.0` app version
 - Annual subscription:
   - Reference name: `Tellingly Plus Annual`
   - Product ID: `app.tellingly.plus.annual`
@@ -49,10 +49,10 @@ Created in App Store Connect:
 
 ## Apple Setup Still Needed
 
-Complete these in App Store Connect after the v1.1 binary includes RevenueCat:
+Complete these in App Store Connect after the fixed `1.0` binary includes RevenueCat:
 
 - Add App Review screenshots for each subscription showing the in-app paywall and restore control.
-- Attach the first subscription to the new app version before submitting v1.1 for review. Apple states the first subscription must be submitted with a new app version.
+- Attach the first subscription to the fixed `1.0` app version before resubmitting for review. Apple states the first subscription must be submitted with an app version.
 
 Do not attach either subscription to the already-submitted free v1.0 review submission. The current binary does not include RevenueCat purchase, restore, or entitlement handling, so attaching subscriptions to that build would create an App Review mismatch.
 
@@ -108,7 +108,7 @@ RevenueCat offering status:
 - Annual package `$rc_annual` maps to `app.tellingly.plus.annual`.
 - The production RevenueCat iOS public SDK key for `Tellingly (App Store)` is installed in `public/assets/revenuecat-config.js`.
 
-Implemented locally for the v1.1 binary path:
+Implemented locally for the fixed `1.0` build path:
 
 - Installed `@revenuecat/purchases-capacitor`.
 - Synced the plugin into `ios/App/CapApp-SPM/Package.swift`.
@@ -116,12 +116,12 @@ Implemented locally for the v1.1 binary path:
 - Added native-iOS-only RevenueCat configuration, entitlement check, offering fetch, package purchase, and restore purchase flow.
 - Added a Plus paywall with monthly/annual plan buttons and a visible `Restore Purchases` control.
 - Gated the second compatibility link behind Plus while keeping the first compatibility link free.
-- Bumped the iOS project to marketing version `1.1`, build `2`.
+- Bumped the iOS project to marketing version `1.0`, build `2`.
 
 Apple blocker:
 
-- App Store Connect rejected creating version `1.1` while the first version `1.0` is still `WAITING_FOR_REVIEW`: `You cannot create a new version of the App in the current state.`
-- Full Xcode and `altool` are not available on this Mac, so a signed v1.1 IPA cannot be built/uploaded locally.
+- App Store Connect rejects creating version `1.1` while the first version `1.0` is still rejected: `You cannot create a new version of the App in the current state.`
+- Full Xcode and `altool` are not available on this Mac, so a signed IPA cannot be built/uploaded locally.
 
 ## Paid Feature Gates
 

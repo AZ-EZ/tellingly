@@ -55,7 +55,7 @@ Prepared files:
 - `scripts/app-store-connect-submit.mjs` for API-based metadata/build/review-detail updates.
 - `scripts/app-store-upload-screenshots.mjs` for API-based screenshot upload.
 - `app-store/monetization-plan.md` with subscription account setup status.
-- `app-store/subscription-review-notes.md` with the prepared v1.1 subscription review note and screenshot checklist.
+- `app-store/subscription-review-notes.md` with the prepared fixed `1.0` subscription review note and screenshot checklist.
 
 Native app behavior has been added to reduce webview-only review risk:
 
@@ -210,7 +210,7 @@ TestFlight status:
 
 External TestFlight emails cannot be sent until Apple approves beta review. Once approved, retry the beta tester invitation for `zandrews77@hotmail.com`.
 
-Subscription setup status for v1.1:
+Subscription setup status for the fixed `1.0` resubmission:
 
 - Subscription group: `Tellingly Plus`, group ID `22183253`.
 - Monthly subscription: `app.tellingly.plus.monthly`, Apple ID `6783584502`.
@@ -218,13 +218,13 @@ Subscription setup status for v1.1:
 - Availability: set for both subscriptions with `availableInNewTerritories=true`.
 - Starting prices: monthly `$3.99`; annual `$24.99`.
 - Product-level subscription review notes: added to both subscriptions in App Store Connect.
-- Local v1.1 code now includes the RevenueCat Capacitor SDK, native-iOS-only paywall, purchase flow, entitlement check, and Restore Purchases control.
-- Local v1.1 native config now bundles the app assets inside the iOS binary instead of loading the Cloudflare website through `server.url`; the native app calls Cloudflare only for `/api/*`.
+- Local fixed `1.0` code now includes the RevenueCat Capacitor SDK, native-iOS-only paywall, purchase flow, entitlement check, and Restore Purchases control.
+- Local fixed `1.0` native config now bundles the app assets inside the iOS binary instead of loading the Cloudflare website through `server.url`; the native app calls Cloudflare only for `/api/*`.
 - RevenueCat `default` offering is configured with `$rc_monthly` -> `app.tellingly.plus.monthly` and `$rc_annual` -> `app.tellingly.plus.annual`.
 - The RevenueCat iOS public SDK key is installed locally and deployed to Cloudflare.
-- The iOS project is bumped to marketing version `1.1`, build `2`.
+- The iOS project is set to marketing version `1.0`, build `2`, because App Store Connect will not create `1.1` while the first `1.0` version is rejected.
 - Latest Cloudflare deployment with the SDK key and native API-base fix: `a6bd28bc-04b0-410d-bb6f-75fbcbb18cb1`.
-- Still needed before v1.1 subscription submission: build and upload the signed v1.1 IPA, upload App Review screenshots showing the real paywall, create or select the v1.1 app version after Apple allows it, and attach the first subscription to v1.1 before submitting.
+- Still needed before resubmission: build and upload the signed `1.0` build `2` IPA, upload App Review screenshots showing the real paywall, attach the first subscription to the existing rejected `1.0` app version, and resubmit.
 - The rejected v1.0 submission should be resolved with a new build that contains the bundled app shell and RevenueCat paywall. The exact Resolution Center rejection text was not available through the App Store Connect API.
 
 ## Official References
