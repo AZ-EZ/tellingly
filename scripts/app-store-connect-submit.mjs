@@ -9,7 +9,7 @@ const keyPath = requiredEnv("ASC_KEY_PATH");
 const privateKey = fs.readFileSync(keyPath, "utf8");
 const metadata = JSON.parse(fs.readFileSync("app-store/app-store-connect-metadata.json", "utf8"));
 const contactPhone = process.env.ASC_CONTACT_PHONE;
-const requiredBuildVersion = process.env.ASC_BUILD_VERSION || "2";
+const requiredBuildVersion = process.env.ASC_BUILD_VERSION || "3";
 
 function requiredEnv(name) {
   const value = process.env[name];

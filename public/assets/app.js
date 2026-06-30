@@ -6,6 +6,7 @@ const PLUS_ENTITLEMENT = "plus";
 const PLUS_MONTHLY_PRODUCT_ID = "app.tellingly.plus.monthly";
 const PLUS_ANNUAL_PRODUCT_ID = "app.tellingly.plus.annual";
 const API_ORIGIN = "https://tellingly.zandrews77.workers.dev";
+const ENABLE_IOS_PLUS = false;
 const app = document.getElementById("app");
 const nativePlugins = () => window.Capacitor?.Plugins || {};
 
@@ -475,6 +476,11 @@ async function createShareLink() {
 }
 
 async function initRevenueCat() {
+  if (!ENABLE_IOS_PLUS) {
+    state.plus.enabled = false;
+    state.plus.ready = true;
+    return;
+  }
   const Purchases = nativePlugins().Purchases;
   const apiKey = revenueCatIosKey();
   state.plus.enabled = Boolean(isNativeIos() && Purchases && apiKey);
