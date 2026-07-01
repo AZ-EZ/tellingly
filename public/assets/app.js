@@ -758,6 +758,29 @@ function toClientQuestion(question, distribution) {
 
 async function downloadCard() {
   if (!state.final) return;
+
+  // An iOS WKWebView silently ignores the <a download> trick used below, so in App
+  // Review this button looked unresponsive. On native, hand the result to the system
+  // share sheet instead (the same native path the Compare button already uses), so the
+  // tap always produces a visible response.
+  if (isNativeIos()) {
+    const Share = nativePlugins().Share;
+    try {
+      if (Share?.share) {
+        await Share.share({
+          title: "Tellingly",
+          text: `My Tellingly rarity is ${state.final.rarity}% today. "${state.final.verdict}" See how rare you are:`,
+          url: API_ORIGIN,
+          dialogTitle: "Share your Tellingly card"
+        });
+      }
+      showToast("Screenshot the card below to keep the image.");
+    } catch (error) {
+      if (!error?.userCancelled) showToast("Screenshot the card below to keep it.");
+    }
+    return;
+  }
+
   const canvas = document.createElement("canvas");
   const width = 1080;
   const height = 1350;
